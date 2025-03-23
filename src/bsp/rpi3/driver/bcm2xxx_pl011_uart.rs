@@ -21,7 +21,7 @@ reg_struct! {
 struct PL011UartRegister {
   0x00 -> dr:     RegRW<u8>,
   0x04 -> rsrecr: RegRW<u8>,
-  0x18 -> fr:     RegRO<u32>,
+  0x18 -> fr:     RegRO<u16 = PL011Flags>,
   0x20 -> ilpr:   RegRW<u32>,
   0x24 -> ibrd:   RegRW<u32>,
   0x28 -> fbrd:   RegRW<u32>,
@@ -34,6 +34,20 @@ struct PL011UartRegister {
   0x44 -> icr:    RegRW<u32>,
   0x48 -> dmacr:  RegRW<u32>,
 }
+}
+
+#[repr(u16)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PL011Flags {
+  CTS  = 1 << 0,
+  DSR  = 1 << 1,
+  DCD  = 1 << 2,
+  BUSY = 1 << 3,
+  RXFE = 1 << 4,
+  TXFF = 1 << 5,
+  RXFF = 1 << 6,
+  TXFE = 1 << 7,
+  RI   = 1 << 8,
 }
 
 impl fmt::Write for PL011Uart {
