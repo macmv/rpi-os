@@ -73,9 +73,7 @@ bitflags! {
 impl fmt::Write for PL011Uart {
   fn write_str(&mut self, s: &str) -> fmt::Result {
     for b in s.bytes() {
-      unsafe {
-        core::ptr::write_volatile(self.reg as *mut u8, b);
-      }
+      self.put(b);
     }
 
     Ok(())
@@ -110,6 +108,18 @@ impl PL011Uart {
 
     // Enable UART, receive, and transmit.
     self.reg().cr.modify(|r| r | Control::UARTEN | Control::TXE | Control::RXE);
+  }
+
+  pub fn put(&self, c: u8) {
+    while self.reg().fr.get().contains(Flags::TXFF) {}
+
+    self.reg().dr.set(c);
+  }
+
+  pub fn get(&self) -> u8 {
+    while self.reg().fr.get().contains(Flags::RXFE) {}
+
+    self.reg().dr.get()
   }
 }
 
