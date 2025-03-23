@@ -5,9 +5,12 @@
 mod arch;
 mod bsp;
 mod print;
+mod register;
 
 #[unsafe(no_mangle)]
 fn _start_rust() -> ! {
+  bsp::init();
+
   println!("HELLO WORLD!!");
 
   unimplemented!()

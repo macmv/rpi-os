@@ -1,7 +1,11 @@
+mod driver;
+
 /// Used by `arch` code to find the early boot core.
 #[unsafe(no_mangle)]
 #[unsafe(link_section = ".text._start_arguments")]
 pub static BOOT_CORE_ID: u64 = 0;
+
+pub fn init() { driver::init(); }
 
 const UART0_BASE: u32 = 0x3F20_1000;
 
