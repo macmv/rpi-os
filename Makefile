@@ -34,9 +34,10 @@ CHECK_CMD   = cargo check $(COMPILER_ARGS)
 OBJCOPY_CMD = rust-objcopy --strip-all -O binary
 
 EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
+EXEC_TEST_DISPATCH = cargo run -p boot_test
 
 
-.PHONY: build qemu clippy clean check readelf objdump nm
+.PHONY: build qemu boot_test clippy clean check readelf objdump nm
 
 build: $(KERNEL_BIN)
 
@@ -56,6 +57,10 @@ $(KERNEL_BIN): $(KERNEL_ELF)
 qemu: $(KERNEL_BIN)
 	$(call color_header, "Launching QEMU")
 	@$(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
+
+boot_test: $(KERNEL_BIN)
+	$(call color_header, "Boot test - $(BSP)")
+	@$(EXEC_TEST_DISPATCH) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
 
 clippy:
 	$(call color_header, "Running clippy")
