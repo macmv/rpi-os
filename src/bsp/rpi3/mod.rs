@@ -1,3 +1,5 @@
+use core::fmt::Write;
+
 mod driver;
 
 /// Used by `arch` code to find the early boot core.
@@ -11,22 +13,4 @@ pub unsafe fn init() {
   }
 }
 
-const UART0_BASE: u32 = 0x3F20_1000;
-
-use core::fmt::{self, Write};
-
-struct QemuOutput;
-
-impl fmt::Write for QemuOutput {
-  fn write_str(&mut self, s: &str) -> fmt::Result {
-    for b in s.bytes() {
-      unsafe {
-        core::ptr::write_volatile(UART0_BASE as *mut u8, b);
-      }
-    }
-
-    Ok(())
-  }
-}
-
-pub fn console() -> impl Write { QemuOutput }
+pub fn console() -> impl Write { driver::UART0 }

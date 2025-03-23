@@ -1,7 +1,9 @@
 mod bcm2xxx_pl011_uart;
 
-pub use bcm2xxx_pl011_uart::PL011Uart;
+pub use bcm2xxx_pl011_uart::UART0;
 
-const UART0: PL011Uart = unsafe { PL011Uart::new(0x3F20_1000) };
-
-pub unsafe fn init() { UART0.init(); }
+pub unsafe fn init() {
+  unsafe {
+    bcm2xxx_pl011_uart::init();
+  }
+}
