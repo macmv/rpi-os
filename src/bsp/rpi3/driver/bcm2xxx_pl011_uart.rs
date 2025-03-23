@@ -12,6 +12,8 @@ pub struct PL011Uart {
 
 pub const UART0: PL011Uart = unsafe { PL011Uart::new(0x3F20_1000) };
 
+const UART_CLOCK: u32 = 4_000_000_u32; // 4 MHz clock
+
 pub unsafe fn init() {
   unsafe {
     UART0.init();
@@ -95,9 +97,13 @@ impl PL011Uart {
 
     // TODO: Clear interrupts.
 
-    // Set baud rate to 115200.
-    self.reg().ibrd.set(1);
-    self.reg().fbrd.set(40);
+    let baud = 115200_u32;
+
+    let ibrd = UART_CLOCK / (16 * baud);
+    let fbrd = ((UART_CLOCK % (16 * baud)) * 64 + baud * 8) / (16 * baud);
+
+    self.reg().ibrd.set(ibrd.try_into().unwrap());
+    self.reg().fbrd.set(fbrd.try_into().unwrap());
 
     // TODO: Set the line control register (lcrh).
     // TODO: Disable interrupts.
