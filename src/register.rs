@@ -14,7 +14,7 @@ pub struct RegRW<T> {
 }
 
 impl<T: Clone + Copy> RegRO<T> {
-  pub fn get(&self) -> T { self.value }
+  pub fn get(&self) -> T { unsafe { core::ptr::read_volatile(&self.value) } }
 }
 
 impl<T: Clone + Copy> RegWO<T> {
