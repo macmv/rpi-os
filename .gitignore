@@ -1,1 +1,5 @@
 /target
+
+/upload/bootcode.bin
+/upload/start.elf
+/upload/fixup.dat
