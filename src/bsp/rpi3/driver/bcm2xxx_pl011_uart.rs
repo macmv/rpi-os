@@ -27,7 +27,7 @@ struct PL011UartRegister {
   0x24 -> ibrd:   RegRW<u16>,
   0x28 -> fbrd:   RegRW<u8>,
   0x2c -> lcrh:   RegRW<u8>,
-  0x30 -> cr:     RegRW<u16>,
+  0x30 -> cr:     RegRW<u16 = Control>,
   0x34 -> ifls:   RegRW<u8>,
   0x38 -> imsc:   RegRW<u16>,
   0x3c -> ris:    RegRO<u16>,
@@ -49,6 +49,22 @@ bitflags! {
     const RXFF = 1 << 6;
     const TXFE = 1 << 7;
     const RI   = 1 << 8;
+  }
+
+  #[derive(Clone, Copy)]
+  pub struct Control: u16 {
+    const UARTEN = 1 << 0;
+    const SIREN  = 1 << 1;
+    const SIRLP  = 1 << 2;
+    const LBE    = 1 << 7;
+    const TXE    = 1 << 8;
+    const RXE    = 1 << 9;
+    const DTR    = 1 << 10;
+    const RTS    = 1 << 11;
+    const OUT1   = 1 << 12;
+    const OUT2   = 1 << 13;
+    const RTSEN  = 1 << 14;
+    const CTSEN  = 1 << 15;
   }
 }
 
@@ -73,7 +89,22 @@ impl PL011Uart {
   fn reg(&self) -> &PL011UartRegister { unsafe { &*self.reg } }
 
   /// SAFETY: Must only be called once.
-  unsafe fn init(&self) { self.reg().dr.set(0x80); }
+  unsafe fn init(&self) {
+    // Disable everything.
+    self.reg().cr.set(Control::empty());
+
+    // TODO: Clear interrupts.
+
+    // Set baud rate to 115200.
+    self.reg().ibrd.set(1);
+    self.reg().fbrd.set(40);
+
+    // TODO: Set the line control register (lcrh).
+    // TODO: Disable interrupts.
+
+    // Enable UART, receive, and transmit.
+    self.reg().cr.modify(|r| r | Control::UARTEN | Control::TXE | Control::RXE);
+  }
 }
 
 #[cfg(test)]

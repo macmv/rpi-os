@@ -26,5 +26,5 @@ impl<T: Clone + Copy> RegRW<T> {
 
   pub fn set(&self, value: T) { unsafe { core::ptr::write_volatile(self.value.get(), value) } }
 
-  pub fn modifiy<F>(&self, f: impl FnOnce(T) -> T) { self.set(f(self.get())); }
+  pub fn modify(&self, f: impl FnOnce(T) -> T) { self.set(f(self.get())); }
 }
