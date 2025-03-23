@@ -1,6 +1,6 @@
 use core::fmt::Write;
 
-mod driver;
+pub mod driver;
 
 /// Used by `arch` code to find the early boot core.
 #[unsafe(no_mangle)]
