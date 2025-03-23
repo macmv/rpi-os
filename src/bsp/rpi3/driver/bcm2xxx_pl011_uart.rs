@@ -3,7 +3,7 @@ use core::fmt;
 use bitflags::bitflags;
 use rpi_os_macros::reg_struct;
 
-use crate::register::{RegRO, RegRW};
+use crate::register::{RegRO, RegRW, RegWO};
 
 #[repr(C)]
 pub struct PL011Uart {
@@ -23,17 +23,17 @@ struct PL011UartRegister {
   0x00 -> dr:     RegRW<u8>,
   0x04 -> rsrecr: RegRW<u8>,
   0x18 -> fr:     RegRO<u16 = PL011Flags>,
-  0x20 -> ilpr:   RegRW<u32>,
-  0x24 -> ibrd:   RegRW<u32>,
-  0x28 -> fbrd:   RegRW<u32>,
-  0x2c -> lcrh:   RegRW<u32>,
-  0x30 -> cr:     RegRW<u32>,
-  0x34 -> ifls:   RegRW<u32>,
-  0x38 -> imsc:   RegRW<u32>,
-  0x3c -> ris:    RegRW<u32>,
-  0x40 -> mis:    RegRW<u32>,
-  0x44 -> icr:    RegRW<u32>,
-  0x48 -> dmacr:  RegRW<u32>,
+  0x20 -> ilpr:   RegRW<u8>,
+  0x24 -> ibrd:   RegRW<u16>,
+  0x28 -> fbrd:   RegRW<u8>,
+  0x2c -> lcrh:   RegRW<u8>,
+  0x30 -> cr:     RegRW<u16>,
+  0x34 -> ifls:   RegRW<u8>,
+  0x38 -> imsc:   RegRW<u16>,
+  0x3c -> ris:    RegRO<u16>,
+  0x40 -> mis:    RegRO<u16>,
+  0x44 -> icr:    RegWO<u16>,
+  0x48 -> dmacr:  RegRW<u8>,
 }
 }
 
