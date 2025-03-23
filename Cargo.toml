@@ -3,6 +3,9 @@ name = "rpi-os"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+bsp_rpi3 = []
+
 [[bin]]
 name = "kernel"
 path = "src/main.rs"
