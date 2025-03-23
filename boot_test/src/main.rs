@@ -35,6 +35,8 @@ fn main() {
     }
 
     if buf.contains("HELLO WORLD!") {
+      println!("output:\n{}", buf);
+      println!("test passed");
       return;
     }
   }
