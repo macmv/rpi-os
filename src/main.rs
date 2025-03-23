@@ -9,7 +9,10 @@ mod register;
 
 #[unsafe(no_mangle)]
 fn _start_rust() -> ! {
-  bsp::init();
+  // SAFETY: We only call `init` once.
+  unsafe {
+    bsp::init();
+  }
 
   println!("HELLO WORLD!!");
 

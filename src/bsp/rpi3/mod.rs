@@ -5,7 +5,11 @@ mod driver;
 #[unsafe(link_section = ".text._start_arguments")]
 pub static BOOT_CORE_ID: u64 = 0;
 
-pub fn init() { driver::init(); }
+pub unsafe fn init() {
+  unsafe {
+    driver::init();
+  }
+}
 
 const UART0_BASE: u32 = 0x3F20_1000;
 

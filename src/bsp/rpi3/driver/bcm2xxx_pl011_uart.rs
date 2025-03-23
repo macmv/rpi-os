@@ -2,7 +2,7 @@ use crate::register::Reg;
 
 #[repr(C)]
 pub struct PL011Uart {
-  reg: &'static PL011UartRegister,
+  reg: *const PL011UartRegister,
 }
 
 #[repr(C)]
@@ -11,9 +11,12 @@ struct PL011UartRegister {
 }
 
 impl PL011Uart {
+  /// SAFETY: The base address must be a valid UART address.
   pub const unsafe fn new(base: usize) -> Self {
-    unsafe { PL011Uart { reg: &*(base as *const PL011UartRegister) } }
+    PL011Uart { reg: base as *const PL011UartRegister }
   }
 
-  pub fn init(&self) { self.reg.status.set(0x80); }
+  fn reg(&self) -> &PL011UartRegister { unsafe { &*self.reg } }
+
+  pub fn init(&self) { self.reg().status.set(0x80); }
 }
