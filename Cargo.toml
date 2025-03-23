@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [workspace]
-members = ["boot_test"]
+members = ["rpi-os-macros", "boot_test"]
 
 [features]
 bsp_rpi3 = []
@@ -14,3 +14,4 @@ name = "kernel"
 path = "src/main.rs"
 
 [dependencies]
+rpi-os-macros = { path = "rpi-os-macros" }

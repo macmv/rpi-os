@@ -1,9 +1,8 @@
 use core::fmt;
 
-use crate::{
-  reg_struct,
-  register::{RegRO, RegRW},
-};
+use rpi_os_macros::reg_struct;
+
+use crate::register::{RegRO, RegRW};
 
 #[repr(C)]
 pub struct PL011Uart {
@@ -20,22 +19,20 @@ pub unsafe fn init() {
 
 reg_struct! {
 struct PL011UartRegister {
-  0x00 -> dr:         RegRW<u32>,
-  0x04 -> rsrecr:     RegRW<u32>,
-  0x08 -> _reserved0: [u32; 4],
-  0x18 -> fr:         RegRO<u32>,
-  0x1c -> _reserved1: [u32; 1],
-  0x20 -> ilpr:       RegRW<u32>,
-  0x24 -> ibrd:       RegRW<u32>,
-  0x28 -> fbrd:       RegRW<u32>,
-  0x2c -> lcrh:       RegRW<u32>,
-  0x30 -> cr:         RegRW<u32>,
-  0x34 -> ifls:       RegRW<u32>,
-  0x38 -> imsc:       RegRW<u32>,
-  0x3c -> ris:        RegRW<u32>,
-  0x40 -> mis:        RegRW<u32>,
-  0x44 -> icr:        RegRW<u32>,
-  0x48 -> dmacr:      RegRW<u32>,
+  0x00 -> dr:     RegRW<u8>,
+  0x04 -> rsrecr: RegRW<u8>,
+  0x18 -> fr:     RegRO<u32>,
+  0x20 -> ilpr:   RegRW<u32>,
+  0x24 -> ibrd:   RegRW<u32>,
+  0x28 -> fbrd:   RegRW<u32>,
+  0x2c -> lcrh:   RegRW<u32>,
+  0x30 -> cr:     RegRW<u32>,
+  0x34 -> ifls:   RegRW<u32>,
+  0x38 -> imsc:   RegRW<u32>,
+  0x3c -> ris:    RegRW<u32>,
+  0x40 -> mis:    RegRW<u32>,
+  0x44 -> icr:    RegRW<u32>,
+  0x48 -> dmacr:  RegRW<u32>,
 }
 }
 
@@ -61,4 +58,28 @@ impl PL011Uart {
 
   /// SAFETY: Must only be called once.
   unsafe fn init(&self) { self.reg().dr.set(0x80); }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn register_offsets() {
+    // Sanity check the `reg_struct!` macro.
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, dr), 0x00);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, rsrecr), 0x04);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, fr), 0x18);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, ilpr), 0x20);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, ibrd), 0x24);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, fbrd), 0x28);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, lcrh), 0x2c);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, cr), 0x30);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, ifls), 0x34);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, imsc), 0x38);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, ris), 0x3c);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, mis), 0x40);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, icr), 0x44);
+    assert_eq!(core::mem::offset_of!(PL011UartRegister, dmacr), 0x48);
+  }
 }
