@@ -14,4 +14,5 @@ name = "kernel"
 path = "src/main.rs"
 
 [dependencies]
+bitflags = "2.9.0"
 rpi-os-macros = { path = "rpi-os-macros" }

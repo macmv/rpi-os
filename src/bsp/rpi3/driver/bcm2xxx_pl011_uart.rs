@@ -1,5 +1,6 @@
 use core::fmt;
 
+use bitflags::bitflags;
 use rpi_os_macros::reg_struct;
 
 use crate::register::{RegRO, RegRW};
@@ -36,18 +37,19 @@ struct PL011UartRegister {
 }
 }
 
-#[repr(u16)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PL011Flags {
-  CTS  = 1 << 0,
-  DSR  = 1 << 1,
-  DCD  = 1 << 2,
-  BUSY = 1 << 3,
-  RXFE = 1 << 4,
-  TXFF = 1 << 5,
-  RXFF = 1 << 6,
-  TXFE = 1 << 7,
-  RI   = 1 << 8,
+bitflags! {
+  #[derive(Clone, Copy)]
+  pub struct PL011Flags: u16 {
+    const CTS  = 1 << 0;
+    const DSR  = 1 << 1;
+    const DCD  = 1 << 2;
+    const BUSY = 1 << 3;
+    const RXFE = 1 << 4;
+    const TXFF = 1 << 5;
+    const RXFF = 1 << 6;
+    const TXFE = 1 << 7;
+    const RI   = 1 << 8;
+  }
 }
 
 impl fmt::Write for PL011Uart {
