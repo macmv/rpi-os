@@ -22,7 +22,7 @@ reg_struct! {
 struct PL011UartRegister {
   0x00 -> dr:     RegRW<u8>,
   0x04 -> rsrecr: RegRW<u8>,
-  0x18 -> fr:     RegRO<u16 = PL011Flags>,
+  0x18 -> fr:     RegRO<u16 = Flags>,
   0x20 -> ilpr:   RegRW<u8>,
   0x24 -> ibrd:   RegRW<u16>,
   0x28 -> fbrd:   RegRW<u8>,
@@ -39,7 +39,7 @@ struct PL011UartRegister {
 
 bitflags! {
   #[derive(Clone, Copy)]
-  pub struct PL011Flags: u16 {
+  pub struct Flags: u16 {
     const CTS  = 1 << 0;
     const DSR  = 1 << 1;
     const DCD  = 1 << 2;
