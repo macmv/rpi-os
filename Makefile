@@ -37,7 +37,7 @@ EXEC_QEMU = $(QEMU_BINARY) -M $(QEMU_MACHINE_TYPE)
 EXEC_TEST_DISPATCH = cargo run -p boot_test
 
 
-.PHONY: build qemu boot_test clippy clean check readelf objdump nm
+.PHONY: build qemu boot_test upload clippy clean check readelf objdump nm
 
 build: $(KERNEL_BIN)
 
@@ -61,6 +61,13 @@ qemu: $(KERNEL_BIN)
 boot_test: $(KERNEL_BIN)
 	$(call color_header, "Boot test - $(BSP)")
 	@$(EXEC_TEST_DISPATCH) $(EXEC_QEMU) $(QEMU_RELEASE_ARGS) -kernel $(KERNEL_BIN)
+
+upload: $(KERNEL_BIN)
+	$(call color_header, "Uploading kernel binary")
+	@rm -rf target/upload
+	@mkdir -p target/upload
+	@cp $(KERNEL_BIN) target/upload/kernel8.img
+	@cp upload/* target/upload
 
 clippy:
 	$(call color_header, "Running clippy")
