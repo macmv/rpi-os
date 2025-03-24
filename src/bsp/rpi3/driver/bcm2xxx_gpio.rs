@@ -85,16 +85,8 @@ impl Gpio {
     // Disable pull-up/pull-down on all pins
     self.set_pull_down(PullDown::OFF, 0xffff_ffff_ffff_ffff);
 
-    // Pin 14 is an output
-    self.select_pin(14, FunctionSelect::OUTPUT);
-
-    // Toggle pin 14
-    loop {
-      self.set0.set(1 << 14);
-      crate::arch::spin_for_cycles(2000);
-      self.clr0.set(1 << 14);
-      crate::arch::spin_for_cycles(2000);
-    }
+    self.select_pin(14, FunctionSelect::ALT0); // UART0 TX
+    self.select_pin(15, FunctionSelect::ALT0); // UART0 RX
   }
 
   fn set_pull_down(&self, pull_down: PullDown, pins: u64) {

@@ -17,8 +17,10 @@ fn _start_rust() -> ! {
   println!("HELLO WORLD!!");
 
   loop {
-    let c = bsp::driver::UART0.get();
-    println!("character: {:?}", c as char);
+    // let c = bsp::driver::UART0.get();
+    // println!("character: {:?}", c as char);
+
+    println!("hi");
   }
 }
 
