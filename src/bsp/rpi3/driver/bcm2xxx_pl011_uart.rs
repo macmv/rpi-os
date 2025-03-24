@@ -19,6 +19,12 @@ pub struct PL011Uart {
   reg: *const PL011UartRegister,
 }
 
+impl core::ops::Deref for PL011Uart {
+  type Target = PL011UartRegister;
+
+  fn deref(&self) -> &Self::Target { unsafe { &*self.reg } }
+}
+
 reg_struct! {
   struct PL011UartRegister {
     0x00 -> dr:     RegRW<u8>,
@@ -85,40 +91,38 @@ impl PL011Uart {
     PL011Uart { reg: base as *const PL011UartRegister }
   }
 
-  fn reg(&self) -> &PL011UartRegister { unsafe { &*self.reg } }
-
   /// SAFETY: Must only be called once.
   unsafe fn init(&self) {
     // Disable everything.
-    self.reg().cr.set(Control::empty());
+    self.cr.set(Control::empty());
 
     // Clear all pending interrupts.
-    self.reg().icr.set(0xffff);
+    self.icr.set(0xffff);
 
     let baud = 115200_u32;
 
     let ibrd = UART_CLOCK / (16 * baud);
     let fbrd = ((UART_CLOCK % (16 * baud)) * 64 + baud * 8) / (16 * baud);
 
-    self.reg().ibrd.set(ibrd.try_into().unwrap());
-    self.reg().fbrd.set(fbrd.try_into().unwrap());
+    self.ibrd.set(ibrd.try_into().unwrap());
+    self.fbrd.set(fbrd.try_into().unwrap());
 
-    self.reg().lcrh.set(0b01100000);
+    self.lcrh.set(0b01100000);
 
     // Enable UART, receive, and transmit.
-    self.reg().cr.modify(|r| r | Control::UARTEN | Control::TXE | Control::RXE);
+    self.cr.modify(|r| r | Control::UARTEN | Control::TXE | Control::RXE);
   }
 
   pub fn put(&self, c: u8) {
-    while self.reg().fr.get().contains(Flags::TXFF) {}
+    while self.fr.get().contains(Flags::TXFF) {}
 
-    self.reg().dr.set(c);
+    self.dr.set(c);
   }
 
   pub fn get(&self) -> u8 {
-    while self.reg().fr.get().contains(Flags::RXFE) {}
+    while self.fr.get().contains(Flags::RXFE) {}
 
-    self.reg().dr.get()
+    self.dr.get()
   }
 }
 
