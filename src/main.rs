@@ -34,7 +34,7 @@ fn panic_prevent_reenter() {
     }
   }
 
-  wait_forever()
+  arch::wait_forever()
 }
 
 #[cfg(not(test))]
@@ -51,12 +51,5 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
 
   println!("=== kernel panic ===\nat {}:{}:{}: {}", location, line, column, info.message());
 
-  wait_forever()
-}
-
-#[cfg(not(test))]
-fn wait_forever() -> ! {
-  loop {
-    arch::wfe();
-  }
+  arch::wait_forever()
 }

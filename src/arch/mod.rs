@@ -6,7 +6,7 @@ pub use aarch64::*;
 
 #[cfg(not(target_arch = "aarch64"))]
 mod tmp {
-  pub fn wfe() { unimplemented!() }
+  pub fn wait_forever() -> ! { unimplemented!() }
 }
 
 #[cfg(not(target_arch = "aarch64"))]
