@@ -21,22 +21,22 @@ pub unsafe fn init() {
 }
 
 reg_struct! {
-struct PL011UartRegister {
-  0x00 -> dr:     RegRW<u8>,
-  0x04 -> rsrecr: RegRW<u8>,
-  0x18 -> fr:     RegRO<u16 = Flags>,
-  0x20 -> ilpr:   RegRW<u8>,
-  0x24 -> ibrd:   RegRW<u16>,
-  0x28 -> fbrd:   RegRW<u8>,
-  0x2c -> lcrh:   RegRW<u8>,
-  0x30 -> cr:     RegRW<u16 = Control>,
-  0x34 -> ifls:   RegRW<u8>,
-  0x38 -> imsc:   RegRW<u16>,
-  0x3c -> ris:    RegRO<u16>,
-  0x40 -> mis:    RegRO<u16>,
-  0x44 -> icr:    RegWO<u16>,
-  0x48 -> dmacr:  RegRW<u8>,
-}
+  struct PL011UartRegister {
+    0x00 -> dr:     RegRW<u8>,
+    0x04 -> rsrecr: RegRW<u8>,
+    0x18 -> fr:     RegRO<u16 = Flags>,
+    0x20 -> ilpr:   RegRW<u8>,
+    0x24 -> ibrd:   RegRW<u16>,
+    0x28 -> fbrd:   RegRW<u8>,
+    0x2c -> lcrh:   RegRW<u8>,
+    0x30 -> cr:     RegRW<u16 = Control>,
+    0x34 -> ifls:   RegRW<u8>,
+    0x38 -> imsc:   RegRW<u16>,
+    0x3c -> ris:    RegRO<u16>,
+    0x40 -> mis:    RegRO<u16>,
+    0x44 -> icr:    RegWO<u16>,
+    0x48 -> dmacr:  RegRW<u8>,
+  }
 }
 
 bitflags! {
