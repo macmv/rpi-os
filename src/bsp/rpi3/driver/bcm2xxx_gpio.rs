@@ -49,7 +49,7 @@ reg_struct! {
     0x80 -> aren1:   RegRW<u32>,
     0x88 -> afen0:   RegRW<u32>,
     0x8c -> afen1:   RegRW<u32>,
-    0x94 -> pud:     RegRW<u32>,
+    0x94 -> pud:     RegRW<u32 = PullDown>,
     0x98 -> pudclk0: RegRW<u32>,
     0x9c -> pudclk1: RegRW<u32>,
   }
@@ -67,6 +67,13 @@ bitflags! {
     const ALT4   = 0b011;
     const ALT5   = 0b010;
   }
+
+  #[derive(Clone, Copy)]
+  pub struct PullDown: u32 {
+    const OFF = 0b00;
+    const DOWN = 0b01;
+    const UP = 0b10;
+  }
 }
 
 impl Gpio {
@@ -75,8 +82,30 @@ impl Gpio {
   }
 
   unsafe fn init(&self) {
-    // Pin 8 is an output
-    self.select_pin(8, FunctionSelect::OUTPUT);
+    // Disable pull-up/pull-down on all pins
+    self.set_pull_down(PullDown::OFF, 0xffff_ffff_ffff_ffff);
+
+    // Pin 14 is an output
+    self.select_pin(14, FunctionSelect::OUTPUT);
+
+    // Toggle pin 14
+    loop {
+      self.set0.set(1 << 14);
+      crate::arch::spin_for_cycles(2000);
+      self.clr0.set(1 << 14);
+      crate::arch::spin_for_cycles(2000);
+    }
+  }
+
+  fn set_pull_down(&self, pull_down: PullDown, pins: u64) {
+    self.pud.set(pull_down);
+    crate::arch::spin_for_cycles(150);
+
+    self.pudclk0.set(pins as u32);
+    self.pudclk1.set((pins >> 32) as u32 & 0x003f_ffff);
+    crate::arch::spin_for_cycles(150);
+
+    self.pudclk0.set(0);
   }
 
   fn select_pin(&self, pin: u32, function: FunctionSelect) {
