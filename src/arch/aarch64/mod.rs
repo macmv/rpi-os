@@ -14,6 +14,12 @@ mod asm {
   pub fn nop() { unsafe { core::arch::asm!("nop", options(nomem, nostack)) } }
 }
 
+pub fn spin_for_cycles(n: usize) {
+  for _ in 0..n {
+    asm::nop();
+  }
+}
+
 pub fn wait_forever() -> ! {
   loop {
     asm::wfe();
