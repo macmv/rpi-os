@@ -3,7 +3,7 @@ use rpi_os_macros::reg_struct;
 
 use crate::register::{RegRW, RegWO};
 
-pub const GPIO: Gpio = unsafe { Gpio::new(0x3F20_0000) };
+pub const GPIO: Gpio = unsafe { Gpio::new(0x3f20_0000) };
 
 pub unsafe fn init() {
   unsafe {
