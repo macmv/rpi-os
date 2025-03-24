@@ -1,3 +1,4 @@
+use bitflags::bitflags;
 use rpi_os_macros::reg_struct;
 
 use crate::register::{RegRW, RegWO};
@@ -54,12 +55,45 @@ reg_struct! {
   }
 }
 
+bitflags! {
+  #[derive(Clone, Copy)]
+  pub struct FunctionSelect: u32 {
+    const INPUT  = 0b000;
+    const OUTPUT = 0b001;
+    const ALT0   = 0b100;
+    const ALT1   = 0b101;
+    const ALT2   = 0b110;
+    const ALT3   = 0b111;
+    const ALT4   = 0b011;
+    const ALT5   = 0b010;
+  }
+}
+
 impl Gpio {
   pub const unsafe fn new(base_addr: usize) -> Self {
     Self { reg: base_addr as *const GpioRegister }
   }
 
   unsafe fn init(&self) {
-    // TODO
+    // Pin 8 is an output
+    self.select_pin(8, FunctionSelect::OUTPUT);
+  }
+
+  fn select_pin(&self, pin: u32, function: FunctionSelect) {
+    assert!(pin < 54, "Invalid pin number");
+
+    let offset = pin / 10;
+    let shift = (pin % 10) * 3;
+
+    let reg = match offset {
+      0 => &self.fsel0,
+      1 => &self.fsel1,
+      2 => &self.fsel2,
+      3 => &self.fsel3,
+      4 => &self.fsel4,
+      5 => &self.fsel5,
+      _ => unreachable!(),
+    };
+    reg.modify(|r| (r & !(0b111 << shift)) | (function.bits() << shift));
   }
 }
