@@ -14,6 +14,12 @@ pub struct Gpio {
   reg: *const GpioRegister,
 }
 
+impl core::ops::Deref for Gpio {
+  type Target = GpioRegister;
+
+  fn deref(&self) -> &Self::Target { unsafe { &*self.reg } }
+}
+
 reg_struct! {
   struct GpioRegister {
     0x00 -> fsel0:   RegRW<u32>,
@@ -49,9 +55,9 @@ reg_struct! {
 }
 
 impl Gpio {
-  pub const fn new(base_addr: usize) -> Self { Self { reg: base_addr as *const GpioRegister } }
-
-  fn reg(&self) -> &GpioRegister { unsafe { &*self.reg } }
+  pub const unsafe fn new(base_addr: usize) -> Self {
+    Self { reg: base_addr as *const GpioRegister }
+  }
 
   unsafe fn init(&self) {
     // TODO
