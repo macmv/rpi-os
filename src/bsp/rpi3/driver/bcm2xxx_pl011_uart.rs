@@ -5,11 +5,6 @@ use rpi_os_macros::reg_struct;
 
 use crate::register::{RegRO, RegRW, RegWO};
 
-#[repr(C)]
-pub struct PL011Uart {
-  reg: *const PL011UartRegister,
-}
-
 pub const UART0: PL011Uart = unsafe { PL011Uart::new(0x3F20_1000) };
 
 const UART_CLOCK: u32 = 4_000_000_u32; // 4 MHz clock
@@ -18,6 +13,10 @@ pub unsafe fn init() {
   unsafe {
     UART0.init();
   }
+}
+
+pub struct PL011Uart {
+  reg: *const PL011UartRegister,
 }
 
 reg_struct! {
