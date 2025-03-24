@@ -15,7 +15,7 @@ mod blank {
   }
 
   pub fn console() -> impl Write { BlankOutput }
-  pub fn init() {}
+  pub unsafe fn init() {}
 }
 
 #[cfg(not(feature = "bsp_rpi3"))]
