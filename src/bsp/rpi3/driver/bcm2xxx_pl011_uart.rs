@@ -93,7 +93,8 @@ impl PL011Uart {
     // Disable everything.
     self.reg().cr.set(Control::empty());
 
-    // TODO: Clear interrupts.
+    // Clear all pending interrupts.
+    self.reg().icr.set(0xffff);
 
     let baud = 115200_u32;
 
@@ -103,8 +104,7 @@ impl PL011Uart {
     self.reg().ibrd.set(ibrd.try_into().unwrap());
     self.reg().fbrd.set(fbrd.try_into().unwrap());
 
-    // TODO: Set the line control register (lcrh).
-    // TODO: Disable interrupts.
+    self.reg().lcrh.set(0b01100000);
 
     // Enable UART, receive, and transmit.
     self.reg().cr.modify(|r| r | Control::UARTEN | Control::TXE | Control::RXE);
