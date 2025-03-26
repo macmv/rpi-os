@@ -7,7 +7,7 @@ use crate::register::{RegRO, RegRW, RegWO};
 
 pub const UART0: PL011Uart = unsafe { PL011Uart::new(0x3f20_1000) };
 
-const UART_CLOCK: u32 = 4_000_000_u32; // 4 MHz clock
+const UART_CLOCK: u32 = 48_000_000_u32; // 48 MHz clock
 
 pub unsafe fn init() {
   unsafe {
