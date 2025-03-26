@@ -11,6 +11,7 @@ mod register;
 fn _start_rust() -> ! {
   // SAFETY: We only call `init` once.
   unsafe {
+    arch::init();
     bsp::init();
   }
 
@@ -19,6 +20,7 @@ fn _start_rust() -> ! {
   loop {
     let c = bsp::driver::UART0.get();
     println!("character: {:?}", c as char);
+    println!("time since boot: {:?}", crate::arch::time_since_boot());
   }
 }
 

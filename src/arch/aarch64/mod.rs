@@ -1,5 +1,15 @@
 use core::arch::global_asm;
 
+mod time;
+
+pub use time::time_since_boot;
+
+pub unsafe fn init() {
+  unsafe {
+    time::init();
+  }
+}
+
 // Assembly counterpart to this file.
 global_asm!(
   include_str!("boot.s"),
