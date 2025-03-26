@@ -78,6 +78,9 @@ bitflags! {
 impl fmt::Write for PL011Uart {
   fn write_str(&mut self, s: &str) -> fmt::Result {
     for b in s.bytes() {
+      if b == b'\n' {
+        self.put(b'\r');
+      }
       self.put(b);
     }
 
