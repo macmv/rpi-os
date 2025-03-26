@@ -5,13 +5,13 @@ static mut TIMER_COUNTER_FREQUENCY: NonZero<u32> = NonZero::<u32>::MIN;
 mod asm {
   pub fn cntfrq_el0() -> u64 {
     let x: u64;
-    unsafe { core::arch::asm!("mrs {x:x}, CNTFRQ_EL0", x = out(reg) x) }
+    unsafe { core::arch::asm!("mrs {x:x}, CNTFRQ_EL0", x = out(reg) x, options(nomem, nostack)) }
     x
   }
 
   pub fn cntpct_el0() -> u64 {
     let x: u64;
-    unsafe { core::arch::asm!("mrs {x:x}, CNTPCT_EL0", x = out(reg) x) }
+    unsafe { core::arch::asm!("mrs {x:x}, CNTPCT_EL0", x = out(reg) x, options(nomem, nostack)) }
     x
   }
 }
