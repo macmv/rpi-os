@@ -34,10 +34,8 @@ SECTIONS {
   .data : { *(.data*) } :segment_data
 
   .bss (NOLOAD) : ALIGN(16) {
-      __bss_start = .;
       *(.bss*);
       . = ALIGN(16);
-      __bss_end_exclusive = .;
   } :segment_data
 
   .got : { *(.got*) }
