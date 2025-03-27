@@ -20,7 +20,6 @@ fn _start_rust() -> ! {
   }
 
   info!("HELLO WORLD!!");
-  crate::print::_print(format_args!("Hello, world!\n"));
 
   loop {
     let c = bsp::driver::UART0.get();

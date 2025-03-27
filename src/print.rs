@@ -4,9 +4,6 @@ use log::Log;
 
 use crate::bsp;
 
-#[doc(hidden)]
-pub fn _print(args: core::fmt::Arguments) { bsp::console().write_fmt(args).unwrap(); }
-
 struct Logger;
 
 pub fn init() {
