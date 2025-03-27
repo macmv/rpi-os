@@ -22,18 +22,6 @@ _start:
 
   // If execution reaches here, it is the boot core.
 
-  // Initialize DRAM.
-  ADR_REL x0, __bss_start
-  ADR_REL x1, __bss_end_exclusive
-
-.L_bss_init_loop:
-  cmp x0, x1
-  b.eq .L_prepare_rust
-  stp xzr, xzr, [x0], #16
-  b .L_bss_init_loop
-
-  // Prepare the jump to Rust code.
-.L_prepare_rust:
   // Set the stack pointer.
   ADR_REL x0, __boot_core_stack_end_exclusive
   mov sp, x0
