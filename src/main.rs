@@ -2,6 +2,9 @@
 #![cfg_attr(not(test), no_main)]
 #![no_std]
 
+#[cfg(test)]
+extern crate std;
+
 mod arch;
 mod bsp;
 mod print;
