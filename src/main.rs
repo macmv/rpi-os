@@ -29,14 +29,12 @@ fn panic_prevent_reenter() {
   static mut PANIC_IN_PROGRESS: bool = false;
 
   unsafe {
-    if !PANIC_IN_PROGRESS {
+    if PANIC_IN_PROGRESS {
+      arch::wait_forever()
+    } else {
       PANIC_IN_PROGRESS = true;
-
-      return;
     }
   }
-
-  arch::wait_forever()
 }
 
 #[cfg(not(test))]
