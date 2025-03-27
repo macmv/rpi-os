@@ -1,25 +1,40 @@
-use core::fmt::Write;
+use core::{fmt::Write, ops::Deref};
+
+use log::Log;
 
 use crate::bsp;
 
 #[doc(hidden)]
 pub fn _print(args: core::fmt::Arguments) { bsp::console().write_fmt(args).unwrap(); }
 
-/// Prints without a newline.
-///
-/// Carbon copy from <https://doc.rust-lang.org/src/std/macros.rs.html>
-#[macro_export]
-macro_rules! print {
-  ($($arg:tt)*) => ($crate::print::_print(format_args!($($arg)*)));
+struct Logger;
+
+pub fn init() {
+  log::set_max_level(log::LevelFilter::Trace);
+  log::set_logger(&Logger).unwrap();
 }
 
-/// Prints with a newline.
-///
-/// Carbon copy from <https://doc.rust-lang.org/src/std/macros.rs.html>
-#[macro_export]
-macro_rules! println {
-  () => ($crate::print!("\n"));
-  ($($arg:tt)*) => ({
-    $crate::print::_print(format_args_nl!($($arg)*));
-  })
+impl Log for Logger {
+  fn enabled(&self, _metadata: &log::Metadata) -> bool { true }
+
+  fn log(&self, record: &log::Record) {
+    if self.enabled(record.metadata()) {
+      writeln!(
+        bsp::console(),
+        "[{} {:?}] {}",
+        match record.level() {
+          log::Level::Error => "E",
+          log::Level::Warn => "W",
+          log::Level::Info => "I",
+          log::Level::Debug => "D",
+          log::Level::Trace => "T",
+        },
+        crate::arch::time_since_boot(),
+        record.args()
+      )
+      .unwrap();
+    }
+  }
+
+  fn flush(&self) {}
 }

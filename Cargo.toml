@@ -15,4 +15,5 @@ path = "src/main.rs"
 
 [dependencies]
 bitflags = "2.9.0"
+log = "0.4.27"
 rpi-os-macros = { path = "rpi-os-macros" }

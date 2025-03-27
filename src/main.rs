@@ -7,20 +7,25 @@ mod bsp;
 mod print;
 mod register;
 
+#[macro_use]
+extern crate log;
+
 #[unsafe(no_mangle)]
 fn _start_rust() -> ! {
   // SAFETY: We only call `init` once.
   unsafe {
     arch::init();
+    print::init();
     bsp::init();
   }
 
-  println!("HELLO WORLD!!");
+  info!("HELLO WORLD!!");
+  crate::print::_print(format_args!("Hello, world!\n"));
 
   loop {
     let c = bsp::driver::UART0.get();
-    println!("character: {:?}", c as char);
-    println!("time since boot: {:?}", crate::arch::time_since_boot());
+    info!("character: {:?}", c as char);
+    info!("time since boot: {:?}", crate::arch::time_since_boot());
   }
 }
 
@@ -49,7 +54,7 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
     _ => ("???", 0, 0),
   };
 
-  println!("=== kernel panic ===\nat {}:{}:{}: {}", location, line, column, info.message());
+  info!("=== kernel panic ===\nat {}:{}:{}: {}", location, line, column, info.message());
 
   arch::wait_forever()
 }
